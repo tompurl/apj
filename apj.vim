@@ -9,27 +9,35 @@
 "               to the extent permitted by applicable law. 
 " ============================================================================
 
-" TODO We will need to know where the journal entries will be store.  Mabye
-" s:apjJournalHome?
-" FIXME Put this in ~/.vimrc and look for it, die if it doesn't exist.
-let s:apjJournalHome = '/home/tom/gtd/diary/entries'
-let s:apjGpgKey = 'Tom Purl (Secret Key) <tom@tompurl.com>'
+" SECTION: Failure Modes
+" ============================================================
+" FM01 - The user has not installed the gnupg vim plugin
+" FM02 - The specified gpg key doesn't exist
+" FM02 - The journal home is not writable
+
+" SECTION: Sanity check
+" ============================================================
+" TODO
 
 " SECTION: Check to see if today's file exists
-" "============================================================
+" ============================================================
 " Example file name: 110101.txt.gpg
 " FIXME strftime is not portable - does this work on Windows?
 " FIXME use os-specific path separator
 
 function! OpenApjFile()
-    let s:apjTodaysFile = s:apjJournalHome . '/' . strftime("%y%m%d") . '.txt.gpg'
-    echo s:apjTodaysFile
+    let s:apjTodaysFile = g:apjJournalHome . '/' . strftime("%y%m%d") . '.txt.gpg'
+    "echo s:apjTodaysFile
 
-    " TODO If the file doesn't exist, create an empty encrypted version
-    if filereadable(s:apjTodaysFile) != 0
-        !gpg -e -r "s:apjGpgKey"  > s:apjTodaysFile
+    " If the file doesn't exist, create an empty encrypted version
+    if filereadable(s:apjTodaysFile) == 0
+        echo 'creating file...'
+        let s:apjGpgCmd = 'echo foo | gpg -e -r "' . g:apjGpgKey . '" > ' . s:apjTodaysFile
+        "echo s:apjGpgCmd
+        exec "!" . s:apjGpgCmd
     endif
 
-    " TODO Open the file
-    e s:apjTodaysFile
+    " Open the file
+    let s:apjOpenFileCmd = 'edit ' . s:apjTodaysFile
+    exec s:apjOpenFileCmd
 endfunction
