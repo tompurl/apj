@@ -1,0 +1,15 @@
+=================
+A Private Journal
+=================
+
+README
+======
+
+This is a simple VIM plugin that allows you to easy keep a daily, GPG-encrypted
+journal. 
+
+Please note that this is my first "real" VIM script. It's mostly an exercise to
+help me learn more about the Vimscript language.
+
+Also, please note that this is not even close to being done. I just wanted to
+get it up on Github as soon as I could :)
