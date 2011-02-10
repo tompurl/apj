@@ -9,6 +9,7 @@
 "               to the extent permitted by applicable law. 
 " ============================================================================
 
+
 " SECTION: Failure Modes
 " ============================================================
 " FM01 - The user has not installed the gnupg vim plugin
