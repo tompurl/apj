@@ -52,6 +52,11 @@
 " FM01 - The user has not installed the gnupg vim plugin
 " FM02 - The specified gpg key doesn't exist
 " FM02 - The journal home is not writable
+ 
+" Section: Possible Enhancements {{{1
+" ============================================================
+" * Do a :bdelete when the user navigates away from the gpg-encrypted buffer?
+" * Collect stats on the current page (or any arbitrary number of entries)
 
 " Section: Functions {{{1
 " ============================================================
