@@ -61,7 +61,7 @@
 " Section: Functions {{{1
 " ============================================================
 " TODO
-" Chec for existance of g:apjJournalHome and g:apjGpgKey
+" Check for existance of g:apjJournalHome and g:apjGpgKey
 
 " SECTION: Check to see if today's file exists
 " ============================================================
@@ -69,13 +69,22 @@
 " FIXME strftime is not portable - does this work on Windows?
 " FIXME use os-specific path separator
 
-" Funtion: OpenApjFile() {{{2
+" Function: OpenApjFile() {{{2
 "
 " Opens today's GPG-encrypted journal entry and creates it if necessary
 "
 function! OpenApjFile()
-    let s:apjTodaysFile = g:apjJournalHome . '/' . strftime("%y%m%d") . '.txt.gpg'
+
+    " Which file separator?
+    let s:filePathSeparator = "/"
+    let	s:MSWIN = has("win16") || has("win32") || has("win64") || has("win95")
+    if s:MSWIN
+        s:filePathSeparator = "\\"
+    end
+
+    let s:apjTodaysFile = g:apjJournalHome . s:filePathSeparator . strftime("%y%m%d") . '.txt.gpg'
     "echo s:apjTodaysFile
+    
 
     " If the file doesn't exist, create an empty encrypted version
     if filereadable(s:apjTodaysFile) == 0
