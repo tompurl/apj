@@ -57,40 +57,43 @@
 " ============================================================
 " * Do a :bdelete when the user navigates away from the gpg-encrypted buffer?
 " * Collect stats on the current page (or any arbitrary number of entries)
+" * Clear the screen when you close a file
+" * Be able to open a diary file that wasn't created today. For example,
+"   :call OpenApjFile yesterday or :call OpenApjFile 2-5-11
+" * Reporting!!!
 
 " Section: Functions {{{1
 " ============================================================
-" TODO
-" Check for existance of g:apjJournalHome and g:apjGpgKey
-
-" SECTION: Check to see if today's file exists
-" ============================================================
-" Example file name: 110101.txt.gpg
-" FIXME strftime is not portable - does this work on Windows?
-" FIXME use os-specific path separator
-
+ 
+" Function: s:sanityCheck() {{{2
+"
+" Make sure that all of the necessary global variables have values
+"
+function! s:sanityCheck()
+    " TODO Store the var names in an array and loop over them 
+    if !exists("g:apjGpgKey")
+      echohl WarningMsg | echo 'You need to set the g:apjGpgKey variable'| echohl None
+    endif
+    if !exists("g:apjJournalHome")
+      echohl WarningMsg | echo 'You need to set the g:apjJournalHome variable'| echohl None
+    endif
+endfunction
+ 
 " Function: OpenApjFile() {{{2
 "
 " Opens today's GPG-encrypted journal entry and creates it if necessary
 "
 function! OpenApjFile()
 
-    " Which file separator?
-    let s:filePathSeparator = "/"
-    let	s:MSWIN = has("win16") || has("win32") || has("win64") || has("win95")
-    if s:MSWIN
-        s:filePathSeparator = "\\"
-    end
+    call s:sanityCheck()
 
+    " TODO strftime is not portable - does this work on Windows?
     let s:apjTodaysFile = g:apjJournalHome . s:filePathSeparator . strftime("%y%m%d") . '.txt.gpg'
-    "echo s:apjTodaysFile
-    
 
     " If the file doesn't exist, create an empty encrypted version
     if filereadable(s:apjTodaysFile) == 0
         echo 'creating file...'
         let s:apjGpgCmd = 'echo foo | gpg -e -r "' . g:apjGpgKey . '" > ' . s:apjTodaysFile
-        "echo s:apjGpgCmd
         exec "!" . s:apjGpgCmd
     endif
 
@@ -99,4 +102,24 @@ function! OpenApjFile()
     exec s:apjOpenFileCmd
 endfunction
 
+" Section: Init values and code {{{1
+" ============================================================
+
+call s:sanityCheck()
+
+""" Set the file path separator
+" TODO Test this on Windows
+let s:filePathSeparator = "/"
+let s:MSWIN = has("win16") || has("win32") || has("win64") || has("win95")
+if s:MSWIN
+    s:filePathSeparator = "\\"
+end
+
+" Section: Keymappings {{{1
+" ============================================================
+
+" Keymap for opening today's file
+nmap <silent> <Leader>jj :call OpenApjFile()<CR>
+imap <silent> <Leader>jj <ESC>:call OpenApjFile()<CR>
+ 
 " vim600: set foldmethod=marker:
