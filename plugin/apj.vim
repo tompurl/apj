@@ -46,6 +46,7 @@
 "   g: apjJournalHome
 "     The folder where you will stor all of your journal entries.
 "
+"
 
 " Section: Failure Modes {{{1
 " ============================================================
